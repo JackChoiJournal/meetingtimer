@@ -326,6 +326,13 @@ function countDownProcess(timers){
 
     // Remove timer and task if task's remain time is zero
     if (timers[0].totalSecondRemain === 0) {
+        // Second left in a minute
+        let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain)).slice(-2) : (timers[0].secondRemain);
+        // Minute left
+        let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
+        updateProgressBar(); // Update progress bar
+        // Render page timer
+        document.querySelector("#remain-time").textContent = minute + ":" + second
         timers.shift(); // Remove the first timer in timers array
         document.querySelector("#task-body>li:first-child").remove(); // Remove task il element
         // Remove the first task from tasksList[global]
@@ -360,8 +367,8 @@ function countDownProcess(timers){
     let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain)).slice(-2) : (timers[0].secondRemain);
     // Minute left
     let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
-
-    document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
+    // Render page timer
+    document.querySelector("#remain-time").textContent = minute + ":" + second
 }
 
 function addTaskToList() {
