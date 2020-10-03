@@ -12,7 +12,10 @@
 }
 
 body {
-    background-color: #f8efd4;
+    background: #DCE596;
+    background: -webkit-linear-gradient(right, #DCE596, #7EE4B7);
+    background: -moz-linear-gradient(right, #DCE596, #7EE4B7);
+    background: linear-gradient(to left, #DCE596, #7EE4B7);
 }
 
 /* Header */
@@ -31,14 +34,14 @@ h1 {
 
 /* Timer */
 #timer__container .card {
+    background-color: #ffecc7;
     border-radius: 1.5rem;
-    margin-left: 2rem;
+    margin-left: 4rem;
     height: 100%;
     width: 100%;
 }
 
 #timer__wrapper {
-    /*width: 100%;*/
     display: flex;
     justify-content: center;
     align-content: center;
@@ -55,6 +58,9 @@ h1 {
     padding: 1.5em 3rem 2rem;
 }
 
+.progress {
+    background: white;
+}
 
 #progress-percentage {
     font-size: 1.5rem;
@@ -74,10 +80,6 @@ h1 {
     height: 400px;
 }
 
-.timer-time__container {
-  
-}
-
 .timer-time__text {
     border: 1px solid;
     border-radius: 50%;
@@ -88,6 +90,7 @@ h1 {
     align-items: center;
     justify-content: center;
     font-size: 3.5rem;
+    background: #f5b971
 }
 
 /* Task */
@@ -102,6 +105,7 @@ h1 {
 }
 
 #task__container .card-header {
+    background: #fafcc2;
     text-align: center;
     font-size: 1.75em;
     border-top-left-radius: 1.5rem;
@@ -113,17 +117,30 @@ h1 {
     padding-bottom: 0;
 }
 
+#task__container .card-body #task-body {
+    height: 17.2rem;
+}
+
+#task__container hr {
+    margin: 0.6rem auto;
+}
+
 #task__container .card-footer {
+    background: #fafcc2;
     display: flex;
     justify-content: flex-end;
     border-bottom-left-radius: 1.5rem;
     border-bottom-right-radius: 1.5rem;
+    padding-bottom: 0.75rem;
+    padding-top: 0.75rem;
 }
 
+
+/* What is this part for?
 .input-group-prepend input:last-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-}
+} */
 
 #task__wrapper>.card ul>li {
     padding: 0 !important;
@@ -143,11 +160,11 @@ h1 {
 }
 
 .dark-background {
-    background-color: #222831;
+    background: #222831;
 }
 
 .dark-remain-time {
-    color: white;
+    background-color: white;
 }
 
 .dark-header-text {

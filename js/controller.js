@@ -10,12 +10,12 @@
  * This major function of this controller is to handle the loop of this application
  */
 let tasksList = {}; // Contain all the task object
+var listLength = 0; // Current tasksList length
 let totalSecond = 0; // Total second of tasks object inside taskList
 let totalMinute = 0; // Total minute of tasks object inside taskList
 let remainSecond = 0; // Total remain second of tasks object inside taskList
 let timerInterval; // Interval of count down
 var theme = 'light'; // Website current theme
-
 
 window.onload = function () {
     init(); // Init all button and task element
@@ -78,14 +78,15 @@ function changeThemeButtonClickEventHandler(theme) {
         this.theme = 'light';
         body.removeClass('dark-background');
         displayTime.removeClass("dark-remain-time");
-        headerText.removeClass("dark-header-text");
+        headerText.removeClass("dark-header-text border-white");
+        headerText.addClass("border-dark");
 
     } else if (theme === 'light') { // Change theme to dark
         this.theme = 'dark';
         body.addClass("dark-background");
         displayTime.addClass("dark-remain-time");
-        headerText.addClass("dark-header-text");
-        
+        headerText.removeClass("border-dark");
+        headerText.addClass("dark-header-text border-white");
     }
 }
 
@@ -196,6 +197,10 @@ function removeTaskButtonClickEventHandler(event, elem) {
         delete tasksList[taskID]; // Remove task from task list[global]
         sumTaskTime(); // Sum and update the current task time
         updateProgressBar(); // Update progress bar
+        listLength--; // Reduce tasksList length 
+        if(listLength == 3){
+            $("#task-body").css("height", "17.2rem"); // Change task-body back to default height
+        } 
 
         // Start the next timer if count down is started and task is not empty
         if (isStart && Object.keys(tasksList).length > 0) {
@@ -350,8 +355,10 @@ function updateProgressBar() {
 
     // Update progress bar width
     let progressBar = document.querySelector("#progress-time");
-    progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString())
+ //   progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
     progressBar.style.width = leftTimePercentage + "%";
+    progressBar.style.background = "black";
+    
 }
 
 function createTaskNode(title = "", minute = 0) {
@@ -366,7 +373,12 @@ function createTaskNode(title = "", minute = 0) {
     if (isNaN(minute)) {
         return;
     }
-
+    listLength++;
+    console.log("Task number: " + listLength);
+    
+    if(listLength == 4) {
+        $("#task-body").css("height", "auto");
+    }
     // Create li element for new task input group
     let lastTask = document.querySelector("#task-body li:last-child"); // Query the last task element
     let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1" // The ID for new task
