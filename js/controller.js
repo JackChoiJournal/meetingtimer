@@ -31,7 +31,7 @@ function init() {
     //Binding click event with change-theme button
     let changeThemeBtn = document.querySelector('#change-theme');
     changeThemeBtn.addEventListener('click', function (event) {
-        console.log("Current theme is " + theme);
+        console.log("Passing in theme " + theme);
         
         changeThemeButtonClickEventHandler(theme);
     })
@@ -71,14 +71,21 @@ function init() {
 
 function changeThemeButtonClickEventHandler(theme) {
     let body = $('body');
+    let displayTime = $('#remain-time');
+    let headerText = $('h1');
     
-    if (theme === 'dark') {
+    if (theme === 'dark') { // Change theme to light 
         this.theme = 'light';
-        body.css('background-color', 'white');
+        body.removeClass('dark-background');
+        displayTime.removeClass("dark-remain-time");
+        headerText.removeClass("dark-header-text");
 
-    } else if (theme === 'light') {
+    } else if (theme === 'light') { // Change theme to dark
         this.theme = 'dark';
-        body.css('background-color', 'black');
+        body.addClass("dark-background");
+        displayTime.addClass("dark-remain-time");
+        headerText.addClass("dark-header-text");
+        
     }
 }
 

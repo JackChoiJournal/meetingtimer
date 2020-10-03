@@ -20,10 +20,9 @@
     <title>Management Timer</title>
 </head>
 
-<body>
+<body class="">
     <header>
-        <!--    <h1 align="center"><font color="blue">Your Happy Timer</font></h1>-->
-        <h1 class="text-primary border-top border-bottom border-primary">Your Happy Timer</h1>
+        <h1 class="border-top border-bottom border-dark">Your Happy Timer</h1>
         <span id="theme__container">
             <i class="btn btn-dark fa fa-moon-o" id="change-theme" style="font-size: 20px;" aria-hidden="true">
             </i>
@@ -33,24 +32,21 @@
     </header>
     <main class="row">
         <section id="timer__container" class="col-12 col-lg-6 p">
-            <div id="timer__wrapper">
+            <div class="" id="timer__wrapper">
                 <div class="card w-100">
-                    <div class="card-header text-center">
-                        <!--                    <span align="centre"><font color="red">Timer</font></span>-->
-                        <span class="text-danger">Timer</span>
-                    </div><!-- Card header -->
+                   
                     <div class="card-body text-center">
-                        <span class="timer-time__text" id="remain-time">00:00</span><!-- Timer time -->
                         <div id="progress-percentage">0%</div>
-                        <div class="progress" style="height: 3px;">
+                        <div class="progress" style="height: 0.75rem;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-time"
                                 role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
                                 style="width: 0%;"></div>
                         </div><!-- Progress bar-->
+                        <div class=timer-time__container>
+                            <span class="timer-time__text" id="remain-time">00:00</span><!-- Timer time -->
+                        </div>
                     </div><!-- Card Body -->
-                    <div class="card-footer text-muted text-center">
-                        <h5 class=""><small>Your Happy Timer</small></h5><!-- Timer total time -->
-                    </div><!-- Card Footer-->
+                   
                 </div><!-- Timer Card -->
             </div><!-- Timer wrapper section -->
         </section><!-- Timer container section -->
