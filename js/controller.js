@@ -14,6 +14,7 @@ var listLength = 0; // Current tasksList length
 let totalSecond = 0; // Total second of tasks object inside taskList
 let totalMinute = 0; // Total minute of tasks object inside taskList
 let remainSecond = 0; // Total remain second of tasks object inside taskList
+let isAutoStart = false;
 let timerInterval; // Interval of count down
 var theme = 'light'; // Website current theme
 
@@ -28,10 +29,19 @@ function init() {
     sumTaskTime(); // Initial totalSecond, totalMinute, and remainSecond
     updateProgressBar(); // Update progress bar
 
+    // Init Bootstrap tooltip
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
+    // Binding click event with auto start button
+    let autoStartBtn = document.querySelector("#auto-start")
+    autoStartBtn.addEventListener("click", autoStartButtonClickEventHandler, false)
+
     //Binding click event with change-theme button
     let changeThemeBtn = document.querySelector('#change-theme');
     changeThemeBtn.addEventListener('click', function (event) {
-        console.log("Passing in theme " + theme);
+        // console.log("Passing in theme " + theme);
 
         changeThemeButtonClickEventHandler(theme);
     })
@@ -66,6 +76,22 @@ function init() {
         li.addEventListener('mouseup', function (e) {
             removeTaskButtonClickEventHandler(e, this);
         }, false)
+    }
+}
+
+function autoStartButtonClickEventHandler(event){
+    isAutoStart = !isAutoStart; // Modify auto start status
+    // Init Bootstrap tooltip
+
+    $("#auto-start").tooltip('hide'); // Hide the current tooltip
+
+    // Modify auto start button text
+    if(isAutoStart){
+        event.target.innerText = "Auto"
+        event.target.dataset.originalTitle = "Automatically start the next timer after finishing the current timer."
+    }else{
+        event.target.innerText = "Manuel"
+        event.target.dataset.originalTitle = "Clicking on start button to start the next timer."
     }
 }
 
@@ -218,27 +244,29 @@ function addTaskButtonClickEventHandler(event) {
 function removeTaskButtonClickEventHandler(event, elem) {
     if (event.target.classList.contains("task-remove-btn")) {
         event.preventDefault(); // Stop event for further action
-        taskID = elem.parentNode.parentNode.parentNode.parentNode.id // Task id
+        let taskID = elem.parentNode.parentNode.parentNode.parentNode.id // Task id
         elem.parentNode.parentNode.parentNode.parentNode.remove(); // Remove task node from html node
-        let isStart = tasksList[taskID].timer.isStart; // Is count down started
+        document.querySelector("#remain-time").textContent = "00:00" // Render page timer
+        let isStart = tasksList[taskID].timer.isStart; // Is this timer started count down
+        document.querySelector("#progress-percentage").innerText = "0%"; // Update progress bar text
+        document.querySelector("#progress-time").setAttribute("aria-valuenow", "0");
+        document.querySelector("#progress-time").style.width = "0";
 
-        // Stop timer is timer is started
+        // Stop started timer
         if (isStart) {
             tasksList[taskID].timer.stop(); // Stop the timer
             clearInterval(timerInterval); // Stop the count down interval
-            // Start the next timer if task is more than two
         }
 
         delete tasksList[taskID]; // Remove task from task list[global]
-        sumTaskTime(); // Sum and update the current task time
-        updateProgressBar(); // Update progress bar
+
         listLength--; // Reduce tasksList length 
         if (listLength == 3) {
             $("#task-body").css("height", "17.2rem"); // Change task-body back to default height
         }
 
-        // Start the next timer if count down is started and task is not empty
-        if (isStart && Object.keys(tasksList).length > 0) {
+        // Start the next timer if count down is started, task is not empty and auto start is select
+        if (isAutoStart && isStart && Object.keys(tasksList).length > 0) {
             startCountDown();
         }
     }
@@ -246,14 +274,14 @@ function removeTaskButtonClickEventHandler(event, elem) {
 
 function modifyTaskTitleInputEventHandler(event, elem) {
     if (event.target.classList.contains("task-title")) {
-        taskID = elem.parentNode.parentNode.parentNode.parentNode.id // Task id
+        let taskID = elem.parentNode.parentNode.parentNode.parentNode.id; // Task id
         tasksList[taskID].title = elem.value;
     }
 }
 
 function modifyTaskMinuteInputEventHandler(event, elem) {
     if (event.target.classList.contains("task-minute")) {
-        taskID = elem.parentNode.parentNode.parentNode.id // Task id
+        let taskID = elem.parentNode.parentNode.parentNode.id // Task id
         tasksList[taskID].timer.minute = elem.value;
     }
 }
@@ -283,43 +311,49 @@ function startCountDown() {
         return
     }
 
+    countDownProcess(timers);
+
     // Render page with timer time each second
     timerInterval = setInterval(function () {
-        // Stop count down if no timer exist
-        if (!timers.length) {
-            clearInterval(timerInterval);
-        }
-
-        // Return if no timer exist
-        if (!timers.length || timers[0].minute === 0) { //Stop counting if task time has not been specified
-            clearInterval(timerInterval);
-            return
-        }
-
-        timers[0].start() // Start the first timer
-        sumTaskTime(); // Update the total time of all task
-        updateProgressBar(); // Update progress bar
-
-        // Second left in a minute
-        let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain % 60)).slice(-2) : (timers[0].secondRemain % 60);
-        // Minute left
-        let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
-
-        document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
-
-        // Remove timer and task if task's remain time is zero
-        if (timers[0].totalSecondRemain === 0) {
-            timers.shift(); // Remove the first timer in timers array
-            document.querySelector("#task-body>li:first-child").remove(); // Remove task il element
-            // Remove the first task from tasksList[global]
-            Object.entries(tasksList).forEach(function ([taskID, taskObj], index) {
-                if (index !== 0) {
-                    return
-                }
-                delete tasksList[taskID] // Remove task
-            })
-        }
+        countDownProcess(timers);
     }, 1000)
+}
+
+function countDownProcess(timers){
+    // Stop count down if no timer exist
+    if (!timers.length) {
+        clearInterval(timerInterval);
+        return;
+    }
+
+    timers[0].start() // Start the first timer
+    sumTaskTime(); // Update the total time of all task
+    updateProgressBar(); // Update progress bar
+
+    // Second left in a minute
+    let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain)).slice(-2) : (timers[0].secondRemain);
+    // Minute left
+    let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
+
+    document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
+
+    // Remove timer and task if task's remain time is zero
+    if (timers[0].totalSecondRemain === 0) {
+        timers.shift(); // Remove the first timer in timers array
+        document.querySelector("#task-body>li:first-child").remove(); // Remove task il element
+        // Remove the first task from tasksList[global]
+        Object.entries(tasksList).forEach(function ([taskID, taskObj], index) {
+            if (index !== 0) {
+                return
+            }
+            delete tasksList[taskID] // Remove task
+        })
+
+        // Stop count down if auto start is not selected
+        if (!isAutoStart) {
+            clearInterval(timerInterval);
+        }
+    }
 }
 
 function addTaskToList() {
@@ -385,15 +419,13 @@ function updateProgressBar() {
     });
 
     // Update progress bar text
-    let progressBarText = document.querySelector("#progress-percentage");
-    progressBarText.innerText = leftTimePercentage + "%";
+    document.querySelector("#progress-percentage").innerText = leftTimePercentage + "%";
 
     // Update progress bar width
     let progressBar = document.querySelector("#progress-time");
-    //   progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
+    progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
     progressBar.style.width = leftTimePercentage + "%";
     progressBar.style.background = theme === 'light' ? "#0d7377" : "white";
-
 }
 
 function createTaskNode(title = "", minute = 0) {
@@ -409,7 +441,7 @@ function createTaskNode(title = "", minute = 0) {
         return;
     }
     listLength++;
-    console.log("Task number: " + listLength);
+    // console.log("Task number: " + listLength);
 
     if (listLength == 4) {
         $("#task-body").css("height", "auto");

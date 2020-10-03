@@ -33,10 +33,14 @@ h1 {
 }
 
 /* Timer */
+#timer__container{
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
 #timer__container .card {
     background-color: #ffecc7;
     border-radius: 1.5rem;
-    margin-left: 4rem;
     height: 100%;
     width: 100%;
 }
@@ -136,12 +140,10 @@ h1 {
     padding-top: 0.75rem;
 }
 
-
-/* What is this part for?
 .input-group-prepend input:last-child {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-} */
+}
 
 #task__wrapper>.card ul>li {
     padding: 0 !important;

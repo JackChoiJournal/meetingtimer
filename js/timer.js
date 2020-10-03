@@ -139,13 +139,13 @@ class Timer {
         // Return if timer already started
         if (this.#_isStart) return;
 
-        console.log("Start timer");
+        // console.log("Start timer");
         this.#_isStart = true; // Update timer status
 
         let obj = this;
         this.#_interval = setInterval(function () {
             obj.totalSecondRemain -= 1;
-            console.log("Current Total Second Left: " + obj.totalSecondRemain);
+            // console.log("Current Total Second Left: " + obj.totalSecondRemain);
 
             if (obj.totalSecondRemain <= 0) {
                 obj.stop();
@@ -161,7 +161,7 @@ class Timer {
     #stopTimer() {
         if (!this.#_isStart) return; // Return if timer not yet start
 
-        console.log("Stop timer");
+        // console.log("Stop timer");
         this.#_isStart = false; // Update timer status
         clearInterval(this.#_interval); // Stop the interval that counting the second
     }
@@ -172,7 +172,7 @@ class Timer {
         *  @param {number} obj Time object
         */
     #resetTimer() {
-        console.log("Reset timer");
+        // console.log("Reset timer");
         // Trigger setter of timer minute and second will force the totalSecondLeft reset itself with the time
         this.minute = this.#_minute;
         this.second = this.#_second;
