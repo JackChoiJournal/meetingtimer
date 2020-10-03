@@ -10,19 +10,31 @@
  * This major function of this controller is to handle the loop of this application
  */
 let tasksList = {}; // Contain all the task object
+var listLength = 0; // Current tasksList length
 let totalSecond = 0; // Total second of tasks object inside taskList
 let totalMinute = 0; // Total minute of tasks object inside taskList
 let remainSecond = 0; // Total remain second of tasks object inside taskList
 let timerInterval; // Interval of count down
+var theme = 'light'; // Website current theme
 
 window.onload = function () {
-    init();// Init all button and task element
+    init(); // Init all button and task element
 };
+
+
 
 function init() {
     addTaskToList(); // Initial task list
     sumTaskTime(); // Initial totalSecond, totalMinute, and remainSecond
     updateProgressBar(); // Update progress bar
+
+    //Binding click event with change-theme button
+    let changeThemeBtn = document.querySelector('#change-theme');
+    changeThemeBtn.addEventListener('click', function (event) {
+        console.log("Passing in theme " + theme);
+
+        changeThemeButtonClickEventHandler(theme);
+    })
 
     // Binding click event with add task button
     let addTaskBtn = document.querySelector('#add-task'); // Add task input group button
@@ -57,6 +69,62 @@ function init() {
     }
 }
 
+function changeThemeButtonClickEventHandler(theme) {
+    let body = $('body');
+    let displayTime = $('#remain-time');
+    let headerText = $('h1');
+    let themeBtn = $('#change-theme');
+    let timerBody = $('#timer__container .card');
+    let taskHeader = $('#task__container .card-header');
+    let taskHeaderText = $('#task__container .card-header span');
+    let taskFooter = $('#task__container .card-footer');
+    let taskFooterHr = $('.card-footer hr');
+    let progress = $('.progress');
+
+
+    if (theme === 'dark') { // Change theme to light 
+        this.theme = 'light';
+        body.removeClass('dark-background');
+        displayTime.removeClass("dark-remain-time");
+
+        headerText.removeClass("dark-header-text border-white");
+        headerText.addClass("border-dark");
+
+        themeBtn.removeClass("fa-sun-o btn-light");
+        themeBtn.addClass("fa-moon-o btn-dark");
+
+        timerBody.css("background-color", "#ffecc7");
+        progress.removeClass("dark-progress");
+
+        taskHeader.css("background-color", "#fafcc2");
+        taskHeaderText.removeClass("text-light");
+        taskHeaderText.addClass("text-dark");
+        taskFooter.css("background-color", "#fafcc2");
+        taskFooterHr.css("border-top", "1px solid black");
+
+
+    } else if (theme === 'light') { // Change theme to dark
+        this.theme = 'dark';
+        body.addClass("dark-background");
+        displayTime.addClass("dark-remain-time");
+
+        headerText.removeClass("border-dark");
+        headerText.addClass("dark-header-text border-white");
+
+        themeBtn.removeClass("fa-moon-o btn-dark");
+        themeBtn.addClass("fa-sun-o btn-light");
+
+        timerBody.css("background-color", "#ececec");
+        progress.addClass("dark-progress");
+
+        taskHeader.css("background-color", "#053f5e");
+        taskHeaderText.removeClass("text-dark");
+        taskHeaderText.addClass("text-light");
+        taskFooter.css("background-color", "#053f5e");
+        taskFooterHr.css("border-top", "1px solid white");
+    }
+}
+
 function importTaskButtonClickEventHandler() {
     let inputNode = document.createElement("input");
     inputNode.type = "file";
@@ -71,7 +139,7 @@ function importTaskButtonClickEventHandler() {
         }
 
         // Return if file is not acceptable
-        const isAcceptFileType = file.type === "application/vnd.ms-excel";  // Check file type
+        const isAcceptFileType = file.type === "application/vnd.ms-excel"; // Check file type
         const isAcceptExtension = file.name.split('.').slice(-1)[0] === "csv"; // Check file extension
         if (!isAcceptFileType || !isAcceptExtension) {
             return;
@@ -110,7 +178,9 @@ function exportTaskButtonClickEventHandler(event) {
     // Download event
     let downloadNode = document.createElement('a');
     downloadNode.onclick = function () {
-        let blob = new Blob([taskContent], {type: "text/csv"}); // Object transfer
+        let blob = new Blob([taskContent], {
+            type: "text/csv"
+        }); // Object transfer
         downloadNode.href = URL.createObjectURL(blob); // Create URL
         downloadNode.download = "task.csv" // File name
         downloadNode.hidden = true; // Hide the node
@@ -162,6 +232,10 @@ function removeTaskButtonClickEventHandler(event, elem) {
         delete tasksList[taskID]; // Remove task from task list[global]
         sumTaskTime(); // Sum and update the current task time
         updateProgressBar(); // Update progress bar
+        listLength--; // Reduce tasksList length 
+        if (listLength == 3) {
+            $("#task-body").css("height", "17.2rem"); // Change task-body back to default height
+        }
 
         // Start the next timer if count down is started and task is not empty
         if (isStart && Object.keys(tasksList).length > 0) {
@@ -217,7 +291,8 @@ function startCountDown() {
         }
 
         // Return if no timer exist
-        if (!timers.length) {
+        if (!timers.length || timers[0].minute === 0) { //Stop counting if task time has not been specified
+            clearInterval(timerInterval);
             return
         }
 
@@ -241,7 +316,6 @@ function startCountDown() {
                 if (index !== 0) {
                     return
                 }
-
                 delete tasksList[taskID] // Remove task
             })
         }
@@ -316,8 +390,10 @@ function updateProgressBar() {
 
     // Update progress bar width
     let progressBar = document.querySelector("#progress-time");
-    progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString())
+    //   progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
     progressBar.style.width = leftTimePercentage + "%";
+    progressBar.style.background = theme === 'light' ? "#0d7377" : "white";
+
 }
 
 function createTaskNode(title = "", minute = 0) {
@@ -332,10 +408,15 @@ function createTaskNode(title = "", minute = 0) {
     if (isNaN(minute)) {
         return;
     }
+    listLength++;
+    console.log("Task number: " + listLength);
 
+    if (listLength == 4) {
+        $("#task-body").css("height", "auto");
+    }
     // Create li element for new task input group
     let lastTask = document.querySelector("#task-body li:last-child"); // Query the last task element
-    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1"// The ID for new task
+    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1" // The ID for new task
 
     let liElem = document.createElement("li");
     liElem.className = "list-group-item";
