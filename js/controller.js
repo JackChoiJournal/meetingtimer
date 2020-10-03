@@ -256,7 +256,8 @@ function startCountDown() {
         }
 
         // Return if no timer exist
-        if (!timers.length) {
+        if (!timers.length || timers[0].minute === 0) { //Stop counting if task time has not been specified
+            clearInterval(timerInterval);
             return
         }
 
@@ -280,7 +281,6 @@ function startCountDown() {
                 if (index !== 0) {
                     return
                 }
-
                 delete tasksList[taskID] // Remove task
             })
         }
