@@ -21,76 +21,146 @@
 </head>
 
 <body>
-<header>
-    <h1 class="border-top border-bottom border-dark">Your Happy Timer</h1>
-    <span id="theme__container">
-            <i class="btn btn-dark fa fa-moon-o" id="change-theme" style="font-size: 20px;" aria-hidden="true">
+    <header>
+        <h1 class="border-top border-bottom border-dark">Your Happy Timer</h1>
+        <span id="theme__container">
+            <i class="btn btn-dark fa fa-question-circle" id="help_btn" data-toggle="tooltip" data-placement="top"
+                title="Display Tutorial" style="font-size: 1.5rem;" aria-hidden="true">
+            </i>
+            <i class="btn btn-dark fa fa-moon-o" id="change-theme" data-toggle="tooltip" data-placement="top"
+                title="Change website theme" style="font-size: 1.5rem;" aria-hidden="true">
             </i>
         </span>
-</header>
-<main class="row">
-    <section id="timer__container" class="col-12 col-lg-6 mb-2 mb-lg-0">
-        <div class="" id="timer__wrapper">
-            <div class="card w-100">
-                <div class="card-body text-center">
-                    <div id="progress-percentage">0%</div>
-                    <div class="progress" style="height: 0.75rem;">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-time"
-                             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
-                             style="width: 0;"></div>
-                    </div><!-- Progress bar-->
-                    <div class=timer-time__container>
-                        <span class="timer-time__text" id="remain-time">00:00</span><!-- Timer time -->
-                    </div>
-                </div><!-- Card Body -->
-            </div><!-- Timer Card -->
-        </div><!-- Timer wrapper section -->
-    </section><!-- Timer container section -->
-    <section id="task__container" class="col-12 col-lg-6">
-        <div id="task__wrapper">
-            <div class="card">
-                <div class="card-header">
-                    <!--                    <span align="centre"><font color="red">Task Title</font></span>-->
-                    <span class="text-dark"><b>Task Title</b></span>
-                </div><!-- Card header -->
-                <div class="card-body">
-                    <ul class="list-group list-group-flush" id="task-body">
-                    </ul>
-                </div><!-- Card body -->
-                <div class="card-footer d-flex flex-column">
-                    <div class="d-flex justify-content-between">
-                        <div class="d-flex justify-content-end text-center">
-                            <button class="btn btn-secondary" id="auto-start" data-toggle="tooltip" data-placement="top" title="Start the next timer by clicking on start button.">Manuel</button>
+    </header>
+    <main class="row">
+        <div id="help_box" class="modal">
+            <!-- Help content -->
+            <div class="modal-content">
+                <!-- <span class="close">&times;</span> -->
+                <span><i class="btn btn-dark fa fa-close" id="close_help" title="Close the tutorial menu"
+                        style="font-size: 1.3rem;" aria-hidden="true">
+                    </i></span>
+
+                <h3 class="text-center">Happy Timer Tutorial</h3>
+                <div class="help_text_wrapper">
+                    <p> Welcome to Your Happy Timer! This timer has been created for the purpose of completing Tools for
+                        Software Development Assignment...
+                        I meant for your usage! Soooooooooooooo ahem let us go through what this timer can do!</p>
+                    <p>To begin with, you can see a beautiful page title "Your Happy Timer", right next to it there are
+                        2 buttons!</p>
+                    <p> <button class="btn btn-dark fa fa-question-circle" style="font-size: 1.5rem;">
+                        </button> is the Help button that leads you to this tutorial. </p>
+                    <p> <button class="btn btn-dark fa fa-moon-o" style="font-size: 1.5rem;"> </button>
+                        is used to change the website theme. There are two themes: dark - light for now
+                        but there might be more in the future if this website actually gets funded!
+                    </p>
+                    <p>Inside the Task table on the right... </p>
+                    <p>
+                        <button class="btn btn-danger">
+                            Add
+                        </button>
+                        The Add button is responsible for creating new tasks. When a new task is added, you can set its
+                        title
+                        and time for completion.
+                    </p>
+                    <p>
+                        <button class="btn btn-primary">
+                            Start
+                        </button>
+                        The Start button would start the timer displayed on the left hand side and start to count down
+                    </p>
+                    <p>
+                        <button class="btn btn-info">
+                            Pause
+                        </button>
+                        The pause button would pause the timer of course...
+                    </p>
+                    <p> <button class="btn btn-success">Manual</button>
+                        I kind of wonder what this button does as well xD
+                    </p>
+                    <p>
+                        <button class="btn btn-info mr-2">Import</button>This button helps you import the tasks that you
+                        previously exported from this website!
+                    </p>
+                    <p>
+                        <button class="btn btn-primary">Export</button>
+                        The export button will export all added tasks into a CSV file and download them to your
+                        computer.
+                    </p>
+                    <p> That is all that this website can currently do. Have fun playing with it and please
+                        stay silent even if you discover any bugs!</p>
+                </div>
+            </div>
+        </div>
+        <section id="timer__container" class="col-12 col-lg-6 mb-2 mb-lg-0">
+            <div class="" id="timer__wrapper">
+                <div class="card w-100">
+                    <div class="card-body text-center">
+                        <div id="progress-percentage">0%</div>
+                        <div class="progress" style="height: 0.75rem;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-time"
+                                role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                                style="width: 0;"></div>
+                        </div><!-- Progress bar-->
+                        <div class=timer-time__container>
+                            <span class="timer-time__text" id="remain-time">00:00</span><!-- Timer time -->
                         </div>
+                    </div><!-- Card Body -->
+                </div><!-- Timer Card -->
+            </div><!-- Timer wrapper section -->
+        </section><!-- Timer container section -->
+        <section id="task__container" class="col-12 col-lg-6">
+            <div id="task__wrapper">
+                <div class="card">
+                    <div class="card-header">
+                        <!--                    <span align="centre"><font color="red">Task Title</font></span>-->
+                        <span class="text-dark"><b>Task Title</b></span>
+                    </div><!-- Card header -->
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush" id="task-body">
+                        </ul>
+                    </div><!-- Card body -->
+                    <div class="card-footer d-flex flex-column">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-end text-center">
+                                <button class="btn btn-success" id="auto-start" data-toggle="tooltip"
+                                    data-placement="top"
+                                    title="Start the next timer by clicking on start button.">Manual</button>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <div class="btn btn-danger mr-2" id="add-task" data-toggle="tooltip"
+                                    data-placement="top" title="Add a new task">
+                                    <span>Add</span>
+                                </div>
+                                <div class="btn btn-info mr-2" id="pause-task" data-toggle="tooltip"
+                                    data-placement="top" title="Pause the current timer">
+                                    <span>Pause</span>
+                                </div>
+                                <div class="btn btn-primary" id="start-task" data-toggle="tooltip" data-placement="top"
+                                    title="Start the timer">
+                                    <span>Start</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="border-top: 1px solid black; width: 100%;" />
                         <div class="d-flex justify-content-end">
-                            <div class="btn btn-danger mr-2" id="add-task">
-                                <span>Add</span>
-                            </div>
-                            <div class="btn btn-info mr-2" id="pause-task">
-                                <span>Pause</span>
-                            </div>
-                            <div class="btn btn-primary" id="start-task">
-                                <span>Start</span>
-                            </div>
+                            <a class="btn btn-info mr-2" id="import-task" data-toggle="tooltip" data-placement="bottom"
+                                title="Import tasks">Import</a>
+                            <a class="btn btn-primary" id="export-task" data-toggle="tooltip" data-placement="bottom"
+                                title="Export tasks"><span>Export</span></a>
                         </div>
-                    </div>
-                    <hr style="border-top: 1px solid black; width: 100%;"/>
-                    <div class="d-flex justify-content-end">
-                        <a class="btn btn-info mr-2" id="import-task">Import</a>
-                        <a class="btn btn-primary" id="export-task"><span>Export</span></a>
-                    </div>
-                </div><!-- Card footer -->
-            </div><!-- Task card -->
-        </div> <!-- Task wrapper section -->
-    </section><!-- Task container section -->
-</main>
-<audio src="./sound/mission_complete.wav" type="audio/wav" id="mission-complete"></audio>
-<footer></footer>
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script type="text/javascript" src="js/jquery-3.5.1.slim.min.js"></script>
-<script type="text/javascript" src="js/popper.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
+                    </div><!-- Card footer -->
+                </div><!-- Task card -->
+            </div> <!-- Task wrapper section -->
+        </section><!-- Task container section -->
+    </main>
+    <audio src="./sound/mission_complete.wav" type="audio/wav" id="mission-complete"></audio>
+    <footer></footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script type="text/javascript" src="js/jquery-3.5.1.slim.min.js"></script>
+    <script type="text/javascript" src="js/popper.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
 </body>
 
 </html>

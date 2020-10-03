@@ -38,6 +38,25 @@ function init() {
     let autoStartBtn = document.querySelector("#auto-start")
     autoStartBtn.addEventListener("click", autoStartButtonClickEventHandler, false)
 
+    //Binding click event with help button
+    let helpBtn = document.querySelector("#help_btn");
+    let closeHelpBtn = document.querySelector("#close_help");
+    let modal = document.querySelector("#help_box");
+
+    helpBtn.onclick = function () { // When the user clicks the button, open the modal 
+        modal.style.display = "block";
+    }
+
+    closeHelpBtn.onclick = function () { // When the user clicks the button, close the modal
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) { // When the user clicks anywhere outside of the modal, close it
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
     //Binding click event with change-theme button
     let changeThemeBtn = document.querySelector('#change-theme');
     changeThemeBtn.addEventListener('click', function (event) {
@@ -79,17 +98,17 @@ function init() {
     }
 }
 
-function autoStartButtonClickEventHandler(event){
+function autoStartButtonClickEventHandler(event) {
     isAutoStart = !isAutoStart; // Modify auto start status
     // Init Bootstrap tooltip
 
     $("#auto-start").tooltip('hide'); // Hide the current tooltip
 
     // Modify auto start button text
-    if(isAutoStart){
+    if (isAutoStart) {
         event.target.innerText = "Auto"
         event.target.dataset.originalTitle = "Automatically start the next timer after finishing the current timer."
-    }else{
+    } else {
         event.target.innerText = "Manuel"
         event.target.dataset.originalTitle = "Clicking on start button to start the next timer."
     }
@@ -106,6 +125,7 @@ function changeThemeButtonClickEventHandler(theme) {
     let taskFooter = $('#task__container .card-footer');
     let taskFooterHr = $('.card-footer hr');
     let progress = $('.progress');
+    let helpBtn = $("#help_btn");
 
 
     if (theme === 'dark') { // Change theme to light 
@@ -118,6 +138,9 @@ function changeThemeButtonClickEventHandler(theme) {
 
         themeBtn.removeClass("fa-sun-o btn-light");
         themeBtn.addClass("fa-moon-o btn-dark");
+
+        helpBtn.removeClass("btn-light");
+        helpBtn.addClass("btn-dark");
 
         timerBody.css("background-color", "#ffecc7");
         progress.removeClass("dark-progress");
@@ -139,6 +162,9 @@ function changeThemeButtonClickEventHandler(theme) {
 
         themeBtn.removeClass("fa-moon-o btn-dark");
         themeBtn.addClass("fa-sun-o btn-light");
+
+        helpBtn.removeClass("btn-dark");
+        helpBtn.addClass("btn-light");
 
         timerBody.css("background-color", "#ececec");
         progress.addClass("dark-progress");
@@ -317,7 +343,7 @@ function startCountDown() {
     }, 1000)
 }
 
-function countDownProcess(timers){
+function countDownProcess(timers) {
     // Stop count down if no timer exist
     if (!timers.length) {
         clearInterval(timerInterval);
