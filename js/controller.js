@@ -20,10 +20,6 @@ var theme = 'light'; // Website current theme
 
 window.onload = function () {
     init(); // Init all button and task element
-
-    // let completeSound = document.querySelector("#mission-complete");
-    // completeSound.play();
-    // completeSound.load();
 };
 
 
@@ -315,8 +311,6 @@ function startCountDown() {
         return
     }
 
-    countDownProcess(timers);
-
     // Render page with timer time each second
     timerInterval = setInterval(function () {
         countDownProcess(timers);
@@ -330,17 +324,6 @@ function countDownProcess(timers){
         return;
     }
 
-    timers[0].start() // Start the first timer
-    sumTaskTime(); // Update the total time of all task
-    updateProgressBar(); // Update progress bar
-
-    // Second left in a minute
-    let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain)).slice(-2) : (timers[0].secondRemain);
-    // Minute left
-    let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
-
-    document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
-
     // Remove timer and task if task's remain time is zero
     if (timers[0].totalSecondRemain === 0) {
         timers.shift(); // Remove the first timer in timers array
@@ -353,6 +336,11 @@ function countDownProcess(timers){
             delete tasksList[taskID] // Remove task
         })
 
+        listLength--; // Reduce tasksList length
+        if (listLength == 3) {
+            $("#task-body").css("height", "17.2rem"); // Change task-body back to default height
+        }
+
         // play sound
         let completeSound = document.querySelector("#mission-complete");
         completeSound.play();
@@ -360,8 +348,20 @@ function countDownProcess(timers){
         // Stop count down if auto start is not selected
         if (!isAutoStart) {
             clearInterval(timerInterval);
+            return;
         }
     }
+
+    timers[0].start() // Start the first timer
+    sumTaskTime(); // Update the total time of all task
+    updateProgressBar(); // Update progress bar
+
+    // Second left in a minute
+    let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain)).slice(-2) : (timers[0].secondRemain);
+    // Minute left
+    let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
+
+    document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
 }
 
 function addTaskToList() {
