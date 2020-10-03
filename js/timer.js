@@ -44,7 +44,7 @@ class Timer {
     set second(value) {
         value = Timer.cleanInteger(value);
 
-        if (value > 60){
+        if (value > 60) {
             value = 60;
         }
 
@@ -52,7 +52,7 @@ class Timer {
         let secondLeft = this.#_totalSecondRemain % 60;
 
         // Assign new second to second left in a minute
-        if(value > secondLeft){
+        if (value > secondLeft) {
             secondLeft = value;
         }
 
@@ -86,11 +86,11 @@ class Timer {
         return this.#_totalSecondRemain;
     }
 
-    get secondRemain(){
+    get secondRemain() {
         return Math.floor(this.totalSecondRemain % 60);
     }
 
-    get minuteRemain(){
+    get minuteRemain() {
         return Math.floor(this.totalSecondRemain / 60);
     }
 
