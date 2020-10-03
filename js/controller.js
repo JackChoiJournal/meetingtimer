@@ -32,7 +32,7 @@ function init() {
     let changeThemeBtn = document.querySelector('#change-theme');
     changeThemeBtn.addEventListener('click', function (event) {
         console.log("Passing in theme " + theme);
-        
+
         changeThemeButtonClickEventHandler(theme);
     })
 
@@ -73,20 +73,55 @@ function changeThemeButtonClickEventHandler(theme) {
     let body = $('body');
     let displayTime = $('#remain-time');
     let headerText = $('h1');
-    
+    let themeBtn = $('#change-theme');
+    let timerBody = $('#timer__container .card');
+    let taskHeader = $('#task__container .card-header');
+    let taskHeaderText = $('#task__container .card-header span');
+    let taskFooter = $('#task__container .card-footer');
+    let taskFooterHr = $('.card-footer hr');
+    let progress = $('.progress');
+
+
     if (theme === 'dark') { // Change theme to light 
         this.theme = 'light';
         body.removeClass('dark-background');
         displayTime.removeClass("dark-remain-time");
+
         headerText.removeClass("dark-header-text border-white");
         headerText.addClass("border-dark");
+
+        themeBtn.removeClass("fa-sun-o btn-light");
+        themeBtn.addClass("fa-moon-o btn-dark");
+
+        timerBody.css("background-color", "#ffecc7");
+        progress.removeClass("dark-progress");
+
+        taskHeader.css("background-color", "#fafcc2");
+        taskHeaderText.removeClass("text-light");
+        taskHeaderText.addClass("text-dark");
+        taskFooter.css("background-color", "#fafcc2");
+        taskFooterHr.css("border-top", "1px solid black");
+
 
     } else if (theme === 'light') { // Change theme to dark
         this.theme = 'dark';
         body.addClass("dark-background");
         displayTime.addClass("dark-remain-time");
+
         headerText.removeClass("border-dark");
         headerText.addClass("dark-header-text border-white");
+
+        themeBtn.removeClass("fa-moon-o btn-dark");
+        themeBtn.addClass("fa-sun-o btn-light");
+
+        timerBody.css("background-color", "#ececec");
+        progress.addClass("dark-progress");
+
+        taskHeader.css("background-color", "#053f5e");
+        taskHeaderText.removeClass("text-dark");
+        taskHeaderText.addClass("text-light");
+        taskFooter.css("background-color", "#053f5e");
+        taskFooterHr.css("border-top", "1px solid white");
     }
 }
 
@@ -198,9 +233,9 @@ function removeTaskButtonClickEventHandler(event, elem) {
         sumTaskTime(); // Sum and update the current task time
         updateProgressBar(); // Update progress bar
         listLength--; // Reduce tasksList length 
-        if(listLength == 3){
+        if (listLength == 3) {
             $("#task-body").css("height", "17.2rem"); // Change task-body back to default height
-        } 
+        }
 
         // Start the next timer if count down is started and task is not empty
         if (isStart && Object.keys(tasksList).length > 0) {
@@ -355,10 +390,10 @@ function updateProgressBar() {
 
     // Update progress bar width
     let progressBar = document.querySelector("#progress-time");
- //   progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
+    //   progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
     progressBar.style.width = leftTimePercentage + "%";
-    progressBar.style.background = "black";
-    
+    progressBar.style.background = theme === 'light' ? "#0d7377" : "white";
+
 }
 
 function createTaskNode(title = "", minute = 0) {
@@ -375,8 +410,8 @@ function createTaskNode(title = "", minute = 0) {
     }
     listLength++;
     console.log("Task number: " + listLength);
-    
-    if(listLength == 4) {
+
+    if (listLength == 4) {
         $("#task-body").css("height", "auto");
     }
     // Create li element for new task input group

@@ -10,8 +10,8 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+   
     <!-- Core CSS -->
     <link rel="stylesheet" type="text/css" href="css/core.css">
     <script type="text/javascript" src="js/timer.js" defer></script>
@@ -32,7 +32,6 @@
         <section id="timer__container" class="col-12 col-lg-6 p">
             <div class="" id="timer__wrapper">
                 <div class="card w-100">
-                   
                     <div class="card-body text-center">
                         <div id="progress-percentage">0%</div>
                         <div class="progress" style="height: 0.75rem;">
@@ -44,7 +43,7 @@
                             <span class="timer-time__text" id="remain-time">00:00</span><!-- Timer time -->
                         </div>
                     </div><!-- Card Body -->
-                   
+
                 </div><!-- Timer Card -->
             </div><!-- Timer wrapper section -->
         </section><!-- Timer container section -->
@@ -53,7 +52,7 @@
                 <div class="card">
                     <div class="card-header">
                         <!--                    <span align="centre"><font color="red">Task Title</font></span>-->
-                        <span class="text-dark">Task Title</span>
+                        <span class="text-dark"><b>Task Title</b></span>
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush" id="task-body">
@@ -71,7 +70,7 @@
                                 <span>Start</span>
                             </div>
                         </div>
-                        <hr style="height: 1px; width: 100%;" />
+                        <hr style="border-top: 1px solid black; width: 100%;" />
                         <div class="d-flex justify-content-end">
                             <a class="btn btn-info mr-2" id="import-task">Import</a>
                             <a class="btn btn-primary" id="export-task"><span>Export</span></a>

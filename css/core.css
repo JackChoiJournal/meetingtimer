@@ -41,6 +41,7 @@ h1 {
     width: 100%;
 }
 
+
 #timer__wrapper {
     display: flex;
     justify-content: center;
@@ -74,11 +75,11 @@ h1 {
     border-bottom-right-radius: 1.5rem;
 }
 
-.timer__svg {
+/* .timer__svg {
     fill: rgba(0, 0, 0, 0.22);
     width: 400px;
     height: 400px;
-}
+} */
 
 .timer-time__text {
     border: 1px solid;
@@ -164,9 +165,13 @@ h1 {
 }
 
 .dark-remain-time {
-    background-color: white;
+    background-color: #bbe1fa;
 }
 
 .dark-header-text {
     color: #ececec;
+}
+
+.dark-progress {
+    background-color: #414141;
 }
