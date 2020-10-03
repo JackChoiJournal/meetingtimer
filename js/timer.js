@@ -43,21 +43,8 @@ class Timer {
     /* Warning: Changing second will cause secondRemain reset with given value */
     set second(value) {
         value = Timer.cleanInteger(value);
-
-        if (value > 60) {
-            value = 60;
-        }
-
-        // Convert total second to second left in a minute
-        let secondLeft = this.#_totalSecondRemain % 60;
-
-        // Assign new second to second left in a minute
-        if (value > secondLeft) {
-            secondLeft = value;
-        }
-
-        this.#_totalSecondRemain = secondLeft + this.#_minute * 60; // Update total second
         this.#_second = value;
+        this.#_totalSecondRemain = this.second + this.minute * 60; // Update total second
     }
 
     get minute() {
@@ -67,33 +54,37 @@ class Timer {
     /* Warning: Changing minute will cause secondRemain reset with given value */
     set minute(value) {
         value = Timer.cleanInteger(value);
-        let secondLeft = this.#_totalSecondRemain % 60;
-        let secondAdd = value * 60;
-        this.#_totalSecondRemain = secondLeft + secondAdd; // Update total second
         this.#_minute = value;
+        this.#_totalSecondRemain = this.second + this.minute * 60; // Update total second
     }
 
+    // Getter of total second of the timer
     get totalSecond() {
         return this.second + Timer.minuteToSecond(this.minute)
     }
 
+    // Setter of total second remain of the timer
     set totalSecondRemain(value) {
         value = Timer.cleanInteger(value);
         this.#_totalSecondRemain = value;
     }
 
+    // Getter of total second remain of the timer
     get totalSecondRemain() {
         return this.#_totalSecondRemain;
     }
 
+    // Getter of second remain of the timer. The current second remain in that moment.
     get secondRemain() {
         return Math.floor(this.totalSecondRemain % 60);
     }
 
+    // Getter of minute remain of the timer. The current minute remain in that moment.
     get minuteRemain() {
         return Math.floor(this.totalSecondRemain / 60);
     }
 
+    // Is the timer started
     get isStart() {
         return this.#_isStart;
     }
@@ -115,10 +106,10 @@ class Timer {
     }
 
     /*
-        * This function converts minute to second and return second
-        *  @param {number} minute
-        *  @return {number}
-        */
+     * This function converts minute to second and return second
+     *  @param {number} minute
+     *  @return {number}
+     */
     static minuteToSecond(minute = 0) {
         minute = this.cleanInteger(minute);
 
