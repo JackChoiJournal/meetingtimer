@@ -85,3 +85,14 @@ header {
     border-bottom-left-radius:1.5rem;
     border-bottom-right-radius: 1.5rem;
 }
+
+.input-group-prepend input:last-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#task__wrapper > .card ul > li {
+    padding: 0 !important;
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
