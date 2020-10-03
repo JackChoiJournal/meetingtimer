@@ -1,8 +1,4 @@
 /* General */
-html, body{
-    min-height:100%;
-}
-
 .row {
     padding: 0;
     margin: 0;
@@ -13,39 +9,13 @@ html, body{
     margin: 0;
 }
 
-/* Body */
-body{
-    background-image: url("../img/pexels-kaboompics-com-5836.jpg");
-    background-color: #f8e540;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
 /* Header */
-@font-face {
-    font-family: "SourceCodePro-Regular";
-    src: url("../font/SourceCodePro-Regular.ttf") format('truetype');
-}
-header{
+header {
     padding-top: 1em;
     padding-bottom: 1em;
     display: flex;
     justify-content: center;
     align-content: center;
-}
-
-header>h1{
-    font-family: "SourceCodePro-Regular", serif;
-    font-size: 2em;
-    font-weight: 900;
-}
-
-@media (min-width: 992px){
-    header>h1{
-        font-family: "SourceCodePro-Regular", serif;
-        font-size: 3em;
-        font-weight: 900;
-    }
 }
 
 /* Timer */
@@ -57,10 +27,6 @@ header>h1{
     display: flex;
     justify-content: center;
     align-content: center;
-}
-
-#timer__wrapper .card-header{
-    font-size: 2em;
 }
 
 .timer__svg {
@@ -80,27 +46,25 @@ header>h1{
 }
 
 .timer-time__text {
-    /*position: absolute;*/
-    /*width: 400px;*/
-    /*height: 400px;*/
-    /*display: flex;*/
-    /*align-items: center;*/
-    /*justify-content: center;*/
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 3.5rem;
 }
 
 /* Task */
-#task__container, #timer__container {
-    padding-bottom: 5%;
+#task__container {
     padding-left: 5%;
     padding-right: 5%;
 }
 
-#task__wrapper,
-#task__container .card,
-#timer__wrapper,
-#timer__container .card{
+#task__container #task__wrapper,
+#task__container .card {
     border-radius: 1.5rem;
+    height: 100%;
 }
 
 #task__container .card-header{
@@ -131,4 +95,15 @@ header>h1{
     padding: 0 !important;
     padding-top: 1rem !important;
     padding-bottom: 1rem !important;
+}
+
+#theme__container {
+    position: absolute;
+    right: 0px;
+    padding-top: 1%;
+    padding-right: 5%;
+}
+
+#change-theme {
+    padding: 0.5rem 0.6rem;
 }

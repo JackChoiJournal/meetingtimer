@@ -14,15 +14,27 @@ let totalSecond = 0; // Total second of tasks object inside taskList
 let totalMinute = 0; // Total minute of tasks object inside taskList
 let remainSecond = 0; // Total remain second of tasks object inside taskList
 let timerInterval; // Interval of count down
+var theme = 'light'; // Website current theme
+
 
 window.onload = function () {
-    init();// Init all button and task element
+    init(); // Init all button and task element
 };
+
+
 
 function init() {
     addTaskToList(); // Initial task list
     sumTaskTime(); // Initial totalSecond, totalMinute, and remainSecond
     updateProgressBar(); // Update progress bar
+
+    //Binding click event with change-theme button
+    let changeThemeBtn = document.querySelector('#change-theme');
+    changeThemeBtn.addEventListener('click', function (event) {
+        console.log("Current theme is " + theme);
+        
+        changeThemeButtonClickEventHandler(theme);
+    })
 
     // Binding click event with add task button
     let addTaskBtn = document.querySelector('#add-task'); // Add task input group button
@@ -57,6 +69,19 @@ function init() {
     }
 }
 
+function changeThemeButtonClickEventHandler(theme) {
+    let body = $('body');
+    
+    if (theme === 'dark') {
+        this.theme = 'light';
+        body.css('background-color', 'white');
+
+    } else if (theme === 'light') {
+        this.theme = 'dark';
+        body.css('background-color', 'black');
+    }
+}
+
 function importTaskButtonClickEventHandler() {
     let inputNode = document.createElement("input");
     inputNode.type = "file";
@@ -71,7 +96,7 @@ function importTaskButtonClickEventHandler() {
         }
 
         // Return if file is not acceptable
-        const isAcceptFileType = file.type === "application/vnd.ms-excel";  // Check file type
+        const isAcceptFileType = file.type === "application/vnd.ms-excel"; // Check file type
         const isAcceptExtension = file.name.split('.').slice(-1)[0] === "csv"; // Check file extension
         if (!isAcceptFileType || !isAcceptExtension) {
             return;
@@ -110,7 +135,9 @@ function exportTaskButtonClickEventHandler(event) {
     // Download event
     let downloadNode = document.createElement('a');
     downloadNode.onclick = function () {
-        let blob = new Blob([taskContent], {type: "text/csv"}); // Object transfer
+        let blob = new Blob([taskContent], {
+            type: "text/csv"
+        }); // Object transfer
         downloadNode.href = URL.createObjectURL(blob); // Create URL
         downloadNode.download = "task.csv" // File name
         downloadNode.hidden = true; // Hide the node
@@ -335,7 +362,7 @@ function createTaskNode(title = "", minute = 0) {
 
     // Create li element for new task input group
     let lastTask = document.querySelector("#task-body li:last-child"); // Query the last task element
-    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1"// The ID for new task
+    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1" // The ID for new task
 
     let liElem = document.createElement("li");
     liElem.className = "list-group-item";
