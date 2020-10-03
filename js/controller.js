@@ -20,6 +20,10 @@ var theme = 'light'; // Website current theme
 
 window.onload = function () {
     init(); // Init all button and task element
+
+    // let completeSound = document.querySelector("#mission-complete");
+    // completeSound.play();
+    // completeSound.load();
 };
 
 
@@ -348,6 +352,10 @@ function countDownProcess(timers){
             }
             delete tasksList[taskID] // Remove task
         })
+
+        // play sound
+        let completeSound = document.querySelector("#mission-complete");
+        completeSound.play();
 
         // Stop count down if auto start is not selected
         if (!isAutoStart) {
