@@ -13,65 +13,35 @@ let tasksList = {}; // Contain all the task object
 let totalSecond = 0; // Total second of tasks object inside taskList
 let totalMinute = 0; // Total minute of tasks object inside taskList
 let remainSecond = 0; // Total remain second of tasks object inside taskList
+let timerInterval;
 
 window.onload = function () {
-    let addTaskInputBtn = document.querySelector('#add_task'); // Add task input group button
+    init();
+};
 
-    addTaskInputBtn.addEventListener("click", function (event) {
-        addTaskNode(event); // Add new task input group nodes into task body
-    }, false)
-
+function init() {
     addTaskToList(); // Initial task list
     sumTaskTime(); // Initial totalSecond, totalMinute, and remainSecond
 
+    // Binding click event with add task button
+    let addTaskBtn = document.querySelector('#add_task'); // Add task input group button
+    addTaskBtn.addEventListener("click", function (event) {
+        addTaskButtonClickEventHandler(event); // Add new task input group nodes into task body
+    }, false)
+
+    // Binding click event with start task button
+    let startTaskInputBtn = document.querySelector('#start_task'); // Add task input group button
+    startTaskInputBtn.addEventListener("click", function (event) {
+        startTaskButtonClickEventHandler(event); // Add new task input group nodes into task body
+    }, false)
+
+    // Binding mouseup event with remove task button
     let li = document.querySelector("#task-body li:first-child"); // Task li elements
     if (li) {
-        // Add event listener to each of the task li elements
         li.addEventListener('mouseup', function (e) {
-            removeTaskButtonEventHandler(e, this);
+            removeTaskButtonClickEventHandler(e, this);
         }, false)
     }
-};
-
-function addTaskNode(event) {
-    /*
-     * Create new task input group node and
-     * add the node as a child into the end of the task ul element.
-     */
-    let lastTask = document.querySelector("#task-body li:last-child"); // Query the last task element
-    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1"// The ID for new task
-
-    // Create li element for new task input group
-    let liElem = document.createElement("li");
-    liElem.className = "list-group-item";
-    liElem.id = newTaskID;
-    liElem.innerHTML = '<form>' +
-        '<div class="input-group">' +
-        '<div class="input-group-prepend mr-1">' +
-        '<input type="text" name="title" class="form-control shadow-sm task-title" placeholder="Title" required>' +
-        '</div>' +
-        '<input type="number" name="minute" class="form-control shadow-sm mr-1 task-minute" step="1" placeholder="Minute" required>' +
-        '<div class="input-group-append">' +
-        '<a class="btn btn-secondary shadow-sm task-remove-btn">Remove</a>' +
-        '</div>' +
-        '</div>' +
-        '</form>'; // Task title, time and add button bodies
-
-    liElem.querySelector(".task-remove-btn").addEventListener('mouseup', function (e) {
-        removeTaskButtonEventHandler(e, this);
-    }, false); // Add event listener to the task remove button
-
-    liElem.querySelector(".task-title").addEventListener('input', function (e) {
-        changeTaskTitleEventHandler(e, this);
-    }, false); // Add event listener to the task title input
-
-    liElem.querySelector(".task-minute").addEventListener('input', function (e) {
-        changeTaskMinuteEventHandler(e, this);
-    }, false); // Add event listener to the task minute input
-
-    let taskBody = document.querySelector("#task-body");
-    taskBody.appendChild(liElem); // Add task input group node into task ul element
-    addTaskToList(); // Add new task to task list[global]
 }
 
 function addTaskToList() {
@@ -82,6 +52,10 @@ function addTaskToList() {
 
     // Add all task to global variable task list
     Array.from(taskElem).map(liElem => {
+        // Return if task already exist
+        if (tasksList.hasOwnProperty(liElem.id)){
+            return;
+        }
         let taskForm = liElem.querySelector("form"); // Form element of task
         let titleElem = taskForm.elements.namedItem("title"); // Title input element of task
         let minuteElem = taskForm.elements.namedItem("minute"); // Minute input element of task
@@ -104,7 +78,7 @@ function sumTaskTime() {
     for (const [taskID, task] of Object.entries(tasksList)) {
         tempMinutes += task.timer.minute;
         tempSeconds += task.timer.second;
-        tempRemainSecond += task.timer.secondRemain;
+        tempRemainSecond += task.timer.totalSecondRemain;
     }
 
     totalMinute = tempMinutes;
@@ -112,26 +86,143 @@ function sumTaskTime() {
     remainSecond = tempRemainSecond;
 }
 
-function removeTaskButtonEventHandler(event, elem) {
+function startTaskButtonClickEventHandler(event, elem) {
+    startCountDown(); // Start the count down
+}
+
+function startCountDown() {
+    // Return if no task exist
+    let tasks = document.querySelectorAll("#task-body>li");
+    if(!tasks.length){
+        return;
+    }
+
+    // Return if first task has not specified minute input
+    let minute = document.querySelector("#task-body>li:first-child input:nth-child(2).task-minute").value;
+    if (minute === ""){
+        return;
+    }
+
+    let timers = []; // Timers of each task
+
+    // Add each timer of task to timers array
+    for (const [taskID, task] of Object.entries(tasksList)) {
+        timers.push(task.timer)
+    }
+
+    // Return if first timer is started
+    if (timers[0].isStart) {
+        return
+    }
+
+    // Render page with timer time each second
+    timerInterval = setInterval(function () {
+        // Stop count down if no timer exist
+        if (!timers.length) {
+            clearInterval(timerInterval);
+        }
+
+        // Return if no timer exist
+        if (!timers.length) {
+            return
+        }
+
+        timers[0].start() // Start the first timer
+        sumTaskTime(); // Update the total time of all task
+
+        // Second left in a minute
+        let second = (timers[0].secondRemain).toString().length < 2 ? ("0" + (timers[0].secondRemain % 60)).slice(-2) : (timers[0].secondRemain % 60);
+        // Minute left
+        let minute = timers[0].minuteRemain.toString().length < 2 ? ("0" + timers[0].minuteRemain).slice(-2) : timers[0].minuteRemain;
+
+        console.log(`${minute}:${second}`)
+        document.querySelector("#remain-time").textContent = minute + ":" + second // Render page timer
+
+        // Remove timer and task if task's remain time is zero
+        if (timers[0].totalSecondRemain === 0) {
+            timers.shift(); // Remove the first timer in timers array
+            document.querySelector("#task-body>li:first-child").remove(); // Remove task il element
+        }
+    }, 1000)
+}
+
+function addTaskButtonClickEventHandler(event) {
+    /*
+     * Create new task input group node and
+     * add the node as a child into the end of the task ul element.
+     */
+    let lastTask = document.querySelector("#task-body li:last-child"); // Query the last task element
+    let newTaskID = lastTask ? "task_" + (parseInt(lastTask.id.slice(-1)) + 1) : "task_1"// The ID for new task
+
+    // Create li element for new task input group
+    let liElem = document.createElement("li");
+    liElem.className = "list-group-item";
+    liElem.id = newTaskID;
+    liElem.innerHTML = '<form>' +
+        '<div class="input-group">' +
+        '<div class="input-group-prepend mr-1">' +
+        '<input type="text" name="title" class="form-control shadow-sm task-title" placeholder="Title" required>' +
+        '</div>' +
+        '<input type="number" name="minute" class="form-control shadow-sm mr-1 task-minute" min="0" step="1" placeholder="Minute" required>' +
+        '<div class="input-group-append">' +
+        '<a class="btn btn-secondary shadow-sm task-remove-btn">Remove</a>' +
+        '</div>' +
+        '</div>' +
+        '</form>'; // Task title, time and add button bodies
+
+    liElem.querySelector(".task-remove-btn").addEventListener('mouseup', function (e) {
+        removeTaskButtonClickEventHandler(e, this);
+    }, false); // Add event listener to the task remove button
+
+    liElem.querySelector(".task-title").addEventListener('input', function (e) {
+        modifyTaskTitleInputEventHandler(e, this);
+    }, false); // Add event listener to the task title input
+
+    liElem.querySelector(".task-minute").addEventListener('input', function (e) {
+        modifyTaskMinuteInputEventHandler(e, this);
+    }, false); // Add event listener to the task minute input
+
+    let taskBody = document.querySelector("#task-body");
+    taskBody.appendChild(liElem); // Add task input group node into task ul element
+    addTaskToList(); // Add new task to task list[global]
+}
+
+function removeTaskButtonClickEventHandler(event, elem) {
     if (event.target.classList.contains("task-remove-btn")) {
         event.preventDefault(); // Stop event for further action
         taskID = elem.parentNode.parentNode.parentNode.parentNode.id // Task id
-        delete tasksList[taskID]; // Remove task from task list[global]
         elem.parentNode.parentNode.parentNode.parentNode.remove(); // Remove task node from html node
+        let isStart = tasksList[taskID].timer.isStart; // Is count down started
+
+        // Stop timer is timer is started
+        if (isStart) {
+            tasksList[taskID].timer.stop(); // Stop the timer
+            clearInterval(timerInterval); // Stop the count down interval
+            // Start the next timer if task is more than two
+        }
+
+        delete tasksList[taskID]; // Remove task from task list[global]
         sumTaskTime(); // Sum and update the current task time
+
+        // Start the next timer if count down is started and task is not empty
+        if (isStart && Object.keys(tasksList).length > 0) {
+            startCountDown();
+        }
     }
 }
 
-function changeTaskTitleEventHandler(event, elem) {
+function modifyTaskTitleInputEventHandler(event, elem) {
     if (event.target.classList.contains("task-title")) {
         taskID = elem.parentNode.parentNode.parentNode.parentNode.id // Task id
         tasksList[taskID].title = elem.value;
     }
 }
 
-function changeTaskMinuteEventHandler(event, elem) {
+function modifyTaskMinuteInputEventHandler(event, elem) {
     if (event.target.classList.contains("task-minute")) {
         taskID = elem.parentNode.parentNode.parentNode.id // Task id
         tasksList[taskID].timer.minute = elem.value;
     }
 }
+
+// TODO Add pause function to pause button

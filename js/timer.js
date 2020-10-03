@@ -19,19 +19,19 @@
 * @param {number}  isStart Allow to get ONLY. It's the status of the timer
 */
 class Timer {
-    #_minute; // The original minute of the timer
-    #_second; // The original second of the timer. Be careful it's not the total second of the timer
-    #_secondRemain; // The total second left of the timer
-    #_start; // Timer status
-    #_interval // The setInterval() that time the total second
+    #_minute = 0; // The original minute of the timer
+    #_second = 0; // The original second of the timer. Be careful it's not the total second of the timer
+    #_totalSecondRemain = 0; // The total second left of the timer
+    #_isStart = false; // Timer status
+    #_interval; // The setInterval() that time the total second
 
     constructor(second = 0, minute = 0, start = false) {
         this.second = second;
         this.minute = minute;
-        this.start = start;
-        this.secondRemain = this.second + this.minute * 60;
+        this.#_isStart = start;
+        this.totalSecondRemain = this.second + Timer.minuteToSecond(this.minute);
 
-        if (this.#_start) {
+        if (this.isStart) {
             this.start(); // Start timer
         }
     }
@@ -43,7 +43,20 @@ class Timer {
     /* Warning: Changing second will cause secondRemain reset with given value */
     set second(value) {
         value = Timer.cleanInteger(value);
-        this.#_secondRemain = value + this.#_minute * 60; // Update total second
+
+        if (value > 60){
+            value = 60;
+        }
+
+        // Convert total second to second left in a minute
+        let secondLeft = this.#_totalSecondRemain % 60;
+
+        // Assign new second to second left in a minute
+        if(value > secondLeft){
+            secondLeft = value;
+        }
+
+        this.#_totalSecondRemain = secondLeft + this.#_minute * 60; // Update total second
         this.#_second = value;
     }
 
@@ -53,26 +66,36 @@ class Timer {
 
     /* Warning: Changing minute will cause secondRemain reset with given value */
     set minute(value) {
-        value = Timer.cleanInteger(value)
-        this.#_secondRemain = this.#_second + value * 60; // Update total second
+        value = Timer.cleanInteger(value);
+        let secondLeft = this.#_totalSecondRemain % 60;
+        let secondAdd = value * 60;
+        this.#_totalSecondRemain = secondLeft + secondAdd; // Update total second
         this.#_minute = value;
     }
 
     get totalSecond() {
-        return this.#_second + this.#_minute
+        return this.second + Timer.minuteToSecond(this.minute)
     }
 
-    set secondRemain(value) {
+    set totalSecondRemain(value) {
         value = Timer.cleanInteger(value);
-        this.#_secondRemain = value;
+        this.#_totalSecondRemain = value;
     }
 
-    get secondRemain() {
-        return this.#_secondRemain;
+    get totalSecondRemain() {
+        return this.#_totalSecondRemain;
+    }
+
+    get secondRemain(){
+        return Math.floor(this.totalSecondRemain % 60);
+    }
+
+    get minuteRemain(){
+        return Math.floor(this.totalSecondRemain / 60);
     }
 
     get isStart() {
-        return this.#_start;
+        return this.#_isStart;
     }
 
     /*
@@ -97,7 +120,7 @@ class Timer {
         *  @return {number}
         */
     static minuteToSecond(minute = 0) {
-        minute = cleanInteger(minute);
+        minute = this.cleanInteger(minute);
 
         return Math.floor(minute * 60);
     }
@@ -109,7 +132,7 @@ class Timer {
         *  @return {number}
         */
     static secondToMinute(second = 0) {
-        second = cleanInteger(second);
+        second = this.cleanInteger(second);
 
         return Math.floor(second / 60);
     }
@@ -123,17 +146,17 @@ class Timer {
         */
     #startTimer() {
         // Return if timer already started
-        if (this.#_start) return;
+        if (this.#_isStart) return;
 
         console.log("Start timer");
-        this.#_start = true; // Update timer status
+        this.#_isStart = true; // Update timer status
 
         let obj = this;
         this.#_interval = setInterval(function () {
-            obj.secondRemain -= 1;
-            console.log("Current Total Second Left: " + obj.secondRemain);
+            obj.totalSecondRemain -= 1;
+            console.log("Current Total Second Left: " + obj.totalSecondRemain);
 
-            if (obj.secondRemain <= 0) {
+            if (obj.totalSecondRemain <= 0) {
                 obj.stop();
             }
         }, 1000)
@@ -145,10 +168,10 @@ class Timer {
         *  @param {number} obj Time object
         */
     #stopTimer() {
-        if (!this.#_start) return; // Return if timer not yet start
+        if (!this.#_isStart) return; // Return if timer not yet start
 
         console.log("Stop timer");
-        this.#_start = false; // Update timer status
+        this.#_isStart = false; // Update timer status
         clearInterval(this.#_interval); // Stop the interval that counting the second
     }
 
