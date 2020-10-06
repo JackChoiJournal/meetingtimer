@@ -22,8 +22,6 @@ window.onload = function () {
     init(); // Init all button and task element
 };
 
-
-
 function init() {
     addTaskToList(); // Initial task list
     sumTaskTime(); // Initial totalSecond, totalMinute, and remainSecond
