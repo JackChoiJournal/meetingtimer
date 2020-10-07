@@ -107,7 +107,7 @@ function autoStartButtonClickEventHandler(event) {
         event.target.innerText = "Auto"
         event.target.dataset.originalTitle = "Automatically start the next timer after finishing the current timer."
     } else {
-        event.target.innerText = "Manuel"
+        event.target.innerText = "Manual"
         event.target.dataset.originalTitle = "Clicking on start button to start the next timer."
     }
 }
