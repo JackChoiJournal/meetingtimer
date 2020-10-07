@@ -122,7 +122,7 @@ function changeThemeButtonClickEventHandler(theme) {
     let taskHeaderText = $('#task__container .card-header span');
     let taskFooter = $('#task__container .card-footer');
     let taskFooterHr = $('.card-footer hr');
-    let progress = $('.progress');
+    let progress = $('#progress-container');
     let helpBtn = $("#help_btn");
 
 
@@ -467,7 +467,7 @@ function updateProgressBar() {
     let progressBar = document.querySelector("#progress-time");
     progressBar.setAttribute("aria-valuenow", leftTimePercentage.toString());
     progressBar.style.width = leftTimePercentage + "%";
-    progressBar.style.background = theme === 'light' ? "#0d7377" : "white";
+    progressBar.style.background = theme === 'light' ? "#0d7377" : "#FFF";
 }
 
 function createTaskNode(title = "", minute = 0) {

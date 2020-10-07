@@ -117,7 +117,7 @@ h1 {
 }
 
 .dark-progress {
-    background-color: #414141;
+    background-color: #414141 !important;
 }
 
 /*------------------------------------------------*/
