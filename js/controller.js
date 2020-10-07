@@ -181,28 +181,30 @@ function importTaskButtonClickEventHandler() {
     let inputNode = document.createElement("input");
     inputNode.type = "file";
     inputNode.accept = "text/csv";
+    console.log(inputNode);
+    //This function is triggered when a file is selected
     inputNode.onchange = function () {
         // Init file content
-        const file = this.files[0]; // First file
+        const file = this.files[0]; // First file, since user can select multiple files at once
 
-        // Return if no file
+        // Do nothing if no file is selected
         if (file === undefined) {
             return
         }
 
-        // Return if file is not acceptable
+        // Alert if file is not acceptable
         const isAcceptFileType = file.type === "application/vnd.ms-excel"; // Check file type
         const isAcceptExtension = file.name.split('.').slice(-1)[0] === "csv"; // Check file extension
         if (!isAcceptFileType || !isAcceptExtension) {
+            alert('Please select a .csv file!');            
             return;
         }
 
         // Read csv content and add task onto page
         const reader = new FileReader();
         reader.onload = function (e) {
-            let tasks = [];
             e.target.result.split('\n').forEach(function (task) {
-                let info = task.split(',');
+                let info = task.split(','); 
                 let title = info[0]; // Task title
                 let minute = info[2]; // Task minute
 
@@ -227,7 +229,7 @@ function exportTaskButtonClickEventHandler(event) {
     }); // Append task info to array
     taskContent = taskContent.join("\n");
 
-    // Download event
+    // A download event
     let downloadNode = document.createElement('a');
     downloadNode.onclick = function () {
         let blob = new Blob([taskContent], {
@@ -404,18 +406,19 @@ function addTaskToList() {
     let taskElem = document.querySelectorAll("#task-body li"); // Query all task li element
 
     // Add all task to global variable task list
-    Array.from(taskElem).map(liElem => {
+    Array.from(taskElem).map(listElem => {
         // Return if task already exist
-        if (tasksList.hasOwnProperty(liElem.id)) {
+        if (tasksList.hasOwnProperty(listElem.id)) {
             return;
         }
-        let taskForm = liElem.querySelector("form"); // Form element of task
+        
+        let taskForm = listElem.querySelector("form"); // Form element of task
         let titleElem = taskForm.elements.namedItem("title"); // Title input element of task
         let minuteElem = taskForm.elements.namedItem("minute"); // Minute input element of task
 
         let title = titleElem.value // Task title
         let minute = Timer.cleanInteger(minuteElem.value) // Task minute
-        tasksList[liElem.id] = new Task(title, 0, minute); // Add Task to task list
+        tasksList[listElem.id] = new Task(title, 0, minute); // Add Task to task list
     });
 }
 
@@ -476,13 +479,14 @@ function createTaskNode(title = "", minute = 0) {
      *
      * @param {string} newTaskID The ID of the new task
      */
-    // Return is minute is not a number
+    // Return if minute is not a number
     minute = parseInt(minute);
     if (isNaN(minute)) {
         return;
     }
     listLength++;
     // console.log("Task number: " + listLength);
+
 
     if (listLength == 4) {
         $("#task-body").css("height", "auto");
